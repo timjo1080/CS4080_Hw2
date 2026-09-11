@@ -1,0 +1,24 @@
+//> slash
+    case '/':
+        if (match('/')) {
+          // A comment goes until the end of the line.
+          while (peek() != '\n' && !isAtEnd()) advance();
+        } else if (match('*')) {
+            // A comment goes until the end of the line.
+            while ((peek() != '*' || peekNext() != '/') && !isAtEnd())
+            {
+                // if we see a newline, increment line counter, moves on to next line
+                if (peek() == '\n') line++;
+                advance();
+            }
+            // consume the closing */
+            if (!isAtEnd()) {
+                advance(); // consume the '*'
+                advance(); // consume the '/'
+            }
+        } 
+        else {
+          addToken(SLASH);
+        }
+        break;
+//< slash
