@@ -1,0 +1,100 @@
+package com.craftinginterpreters.lox;
+
+import com.craftinginterpreters.lox.Expr.Assign;
+import com.craftinginterpreters.lox.Expr.Call;
+import com.craftinginterpreters.lox.Expr.Get;
+import com.craftinginterpreters.lox.Expr.Logical;
+import com.craftinginterpreters.lox.Expr.Set;
+import com.craftinginterpreters.lox.Expr.Super;
+import com.craftinginterpreters.lox.Expr.This;
+import com.craftinginterpreters.lox.Expr.Variable;
+
+class RPNConverter implements Expr.Visitor<String> {
+  String print(Expr expr) {
+    return expr.accept(this);
+  }
+
+  /* challenge 3 starts here */
+
+
+  /* for binary groupings e.g. 1 + 2 */
+  public String visitBinaryExpr(Expr.Binary expr) {
+    return expr.left.accept(this) + " " + expr.right.accept(this) + " " + expr.operator.lexeme;
+  }
+
+  /* for grouping expressions e.g. (1 + 2) */
+  public String visitGroupingExpr(Expr.Grouping expr) {
+    return expr.expression.accept(this);
+  }
+
+  /* for literal values e.g. 1, "hello" */
+  public String visitLiteralExpr(Expr.Literal expr) {
+    return expr.value.toString();
+  }
+
+  /* for unary expressions e.g. !true */
+  public String visitUnaryExpr(Expr.Unary expr) {
+    return expr.right.accept(this) + " " + expr.operator.lexeme;
+  }
+
+
+
+  /* unimportant methods for this challenge */
+  @Override
+  public String visitAssignExpr(Assign expr) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'visitAssignExpr'");
+  }
+
+  @Override
+  public String visitCallExpr(Call expr) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'visitCallExpr'");
+  }
+
+  @Override
+  public String visitGetExpr(Get expr) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'visitGetExpr'");
+  }
+
+  @Override
+  public String visitLogicalExpr(Logical expr) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'visitLogicalExpr'");
+  }
+
+  @Override
+  public String visitSetExpr(Set expr) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'visitSetExpr'");
+  }
+
+  @Override
+  public String visitSuperExpr(Super expr) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'visitSuperExpr'");
+  }
+
+  @Override
+  public String visitThisExpr(This expr) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'visitThisExpr'");
+  }
+
+  @Override
+  public String visitVariableExpr(Variable expr) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'visitVariableExpr'");
+  }
+  
+  public static void main(String[] args) {
+    Expr expression = new Expr.Binary(
+      new Expr.Grouping(new Expr.Binary(new Expr.Literal(1), new Token(TokenType.PLUS, "+", null, 1), new Expr.Literal(2))),
+      new Token(TokenType.STAR, "*", null, 1),
+      new Expr.Grouping(
+        new Expr.Binary(new Expr.Literal(4), new Token(TokenType.MINUS, "-", null, 1), new Expr.Literal(3))));
+
+    System.out.println(new RPNConverter().print(expression));
+  }
+}  
